@@ -1,0 +1,160 @@
+.torrent-header {
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.torrent-title {
+    margin: 0 0 1rem 0;
+    color: var(--accent);
+    word-break: break-word;
+}
+
+.torrent-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.meta-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.meta-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.meta-value {
+    font-weight: 500;
+    word-break: break-all;
+}
+
+.meta-value.hash {
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+.torrent-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.download-btn,
+.magnet-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.download-btn {
+    background-color: var(--accent);
+    color: white;
+}
+
+.download-btn:hover {
+    background-color: var(--accent-hover);
+}
+
+.magnet-btn {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+}
+
+.magnet-btn:hover {
+    background-color: rgba(58, 123, 213, 0.1);
+}
+
+.torrent-files {
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.files-title {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.file-tree {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.file-tree__item {
+    padding: 0.25rem 0;
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.file-tree__item--dir {
+    color: var(--accent);
+    font-weight: 500;
+}
+
+.file-tree__item--file {
+    color: var(--text-primary);
+}
+
+.file-tree__icon {
+    margin-right: 0.5rem;
+}
+
+.file-tree__name {
+    word-break: break-all;
+}
+
+.file-tree__size {
+    margin-left: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.file-tree__nested {
+    list-style: none;
+    padding-left: 1.5rem;
+    margin: 0.25rem 0;
+}
+
+.torrent-description {
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.section-title {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: var(--accent);
+}
+
+.section-content {
+    max-width: 100%;
+    word-break: break-word;
+    line-height: 1.6;
+}
+
+.section-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin: 0.5rem 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    width: 100%;
+}

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Upload File - Go-Indexer</title>
+    <link rel="stylesheet" href="/static/css/global.css">
+    <link rel="stylesheet" href="/static/css/form.css">
+    <link rel="stylesheet" href="/static/css/markdown.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/apple-touch-icon.png">
+    <link rel="manifest" href="/static/favicon/site.webmanifest">
+    <script src="/static/js/marked.min.js"></script>
+</head>
+
+<body>
+    <header class="navbar">
+        <a href="/" class="logo">
+            <h1>Go-Indexer</h1>
+        </a>
+        <div class="navbar-actions">
+            <a href="/" class="user-button">Home</a>
+            {{if .Username}}
+            <a href="/profile/{{.Username}}" class="user-button">{{.Username}}</a>
+            {{else}}
+            <a href="/profile" class="user-button">Login</a>
+            {{end}}
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="upload-container">
+            <h2 class="upload-title">Upload File</h2>
+            <form action="/upload" method="post" enctype="multipart/form-data" class="upload-form">
+                <div class="form-group">
+                    <label for="category">Category:</label>
+                    <select id="category" name="category" class="form-control" required>
+                        <option value="">Select a category</option>
+                        <option value="1">Movies</option>
+                        <option value="2">Television</option>
+                        <option value="3">Games</option>
+                        <option value="4">Music</option>
+                        <option value="5">Applications</option>
+                        <option value="6">Anime</option>
+                        <option value="7">Documentaries</option>
+                        <option value="8">Other</option>
+                        <option value="9">XXX</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="name">Descriptive Name (optional) :</label>
+                    <input type="text" id="name" name="name" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <div class="markdown-controls">
+                        <button type="button" class="markdown-btn active" data-action="write">Write</button>
+                        <button type="button" class="markdown-btn" data-action="preview">Preview</button>
+                    </div>
+                    <div class="markdown-container">
+                        <textarea id="description" name="description" class="markdown-editor form-control" rows="6"
+                            maxlength="2500"></textarea>
+                        <div id="preview" class="markdown-preview"></div>
+                        <small id="char-counter" style="display: block; text-align: right;">0 / 2500 characters</small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="file">File:</label>
+                    <div class="file-upload">
+                        <input type="file" id="file" name="file" class="file-input" required>
+                        <label for="file" class="file-label">Choose file</label>
+                        <span class="file-name" id="file-name">No file selected</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="upload-btn">Upload</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+
+        document.getElementById('description').addEventListener('input', function () {
+            const maxLength = 2500;
+            const currentLength = this.value.length;
+            const counter = document.getElementById('char-counter');
+
+            counter.textContent = `${currentLength} / ${maxLength} caratteri`;
+
+            if (currentLength > 2000) {
+                counter.style.color = currentLength >= maxLength ? 'red' : 'orange';
+            } else {
+                counter.style.color = '';
+            }
+        });
+
+        document.getElementById('file').addEventListener('change', function (e) {
+            const fileName = e.target.files[0] ? e.target.files[0].name : 'No file selected';
+            document.getElementById('file-name').textContent = fileName;
+        });
+
+        const writeBtn = document.querySelector('[data-action="write"]');
+        const previewBtn = document.querySelector('[data-action="preview"]');
+        const editor = document.querySelector('.markdown-editor');
+        const preview = document.getElementById('preview');
+
+        function updatePreview() {
+            marked.setOptions({
+                gfm: true,
+                breaks: true,
+                tables: true,
+            });
+
+            preview.innerHTML = marked.parse(editor.value);
+        }
+
+        writeBtn.addEventListener('click', function () {
+            editor.style.display = 'block';
+            preview.style.display = 'none';
+            writeBtn.classList.add('active');
+            previewBtn.classList.remove('active');
+        });
+
+        previewBtn.addEventListener('click', function () {
+            updatePreview();
+            editor.style.display = 'none';
+            preview.style.display = 'block';
+            writeBtn.classList.remove('active');
+            previewBtn.classList.add('active');
+        });
+
+        editor.addEventListener('input', function () {
+            if (preview.style.display === 'block') {
+                updatePreview();
+            }
+        });
+    </script>
+</body>
+
+</html>

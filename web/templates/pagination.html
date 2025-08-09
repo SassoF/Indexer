@@ -1,0 +1,38 @@
+{{define "pagination"}}
+<nav>
+<ul class="pagination compact">
+        {{$showFirst := gt (sub .CurrentPage 5) 1}}
+        {{if $showFirst}}
+            <li class="page-item">
+                <a class="page-link" href="?{{if .Query}}q={{.Query}}&{{end}}p=1">1</a>
+            </li>
+            {{if gt (sub .CurrentPage 5) 2}}
+                <li class="page-item disabled">
+                    <span class="page-ellipsis">...</span>
+                </li>
+            {{end}}
+        {{end}}
+
+        {{$start := max 1 (sub .CurrentPage 5)}}
+        {{$end := min .TotalPages (add .CurrentPage 5)}}
+        
+        {{range $i := seq $start $end}}
+            <li class="page-item {{if eq $i $.CurrentPage}}active{{end}}">
+                <a class="page-link" href="?{{if $.Query}}q={{$.Query}}&{{end}}p={{$i}}">{{$i}}</a>
+            </li>
+        {{end}}
+
+        {{$showLast := lt (add .CurrentPage 5) .TotalPages}}
+        {{if $showLast}}
+            {{if lt (add .CurrentPage 5) (sub .TotalPages 1)}}
+                <li class="page-item disabled">
+                    <span class="page-ellipsis">...</span>
+                </li>
+            {{end}}
+            <li class="page-item">
+                <a class="page-link" href="?{{if .Query}}q={{.Query}}&{{end}}p={{.TotalPages}}">{{.TotalPages}}</a>
+            </li>
+        {{end}}
+    </ul>
+</nav>
+{{end}}

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <title>Go-Indexer</title>
+  <link rel="stylesheet" href="/static/css/global.css">
+  <link rel="stylesheet" href="/static/css/table.css">
+  <link rel="stylesheet" href="/static/css/pagination.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/apple-touch-icon.png">
+  <link rel="manifest" href="/static/favicon/site.webmanifest">
+</head>
+<body>
+  <header class="navbar">
+    <a href="/" class="logo"><h1>Go-Indexer</h1></a>
+    <div class="navbar-actions">
+      <form id="searchForm" class="search-form">
+        <input type="text" name="searchTerm" placeholder="Search..." id="searchInput" class="search-input">
+        <button type="submit" class="search-button">Search</button>
+      </form>
+      {{if .Username}}
+      <div class="dropdown">
+        <button class="user-button">{{.Username}} ▼</button>
+        <div class="dropdown-content">
+          <a href="/profile/{{.Username}}">Profile</a>
+          <a href="/logout">Logout</a>
+        </div>
+      </div>
+      <a href="/upload" class="user-button">Upload</a>
+      {{else}}
+      <a href="/profile" class="user-button">Login</a>
+      {{end}}
+    </div>
+  </header>
+
+  <main class="container">
+    <table class="file-table">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Name</th>
+          <th>Time</th>
+          <th>Size</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{range .Entries}}
+        <tr>
+          <td>{{.Category}}</td>
+          <td><a href="/view/{{.Hash}}">{{.Name}}</a></td>
+          <td>{{.Time}}</td>
+          <td>{{.Size}}</td>
+        </tr>
+        {{end}}
+      </tbody>
+    </table>
+
+    {{template "pagination" .}}
+  </main>
+
+  <script src="/static/js/search.js"></script>
+</body>
+</html>

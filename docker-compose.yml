@@ -1,0 +1,65 @@
+services:
+  indexer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: indexer
+    environment:
+    - INDEXER_IP=${INDEXER_IP}
+    - DB_HOST=${MARIADB_HOST}
+    - DB_PORT=${MARIADB_PORT}
+    - DB_USER=${MARIADB_USER}
+    - DB_PASSWORD=${MARIADB_PASSWORD}
+    - DB_NAME=${MARIADB_DATABASE}
+    - REDIS_HOST=${REDIS_HOST}
+    - REDIS_PORT=${REDIS_PORT}
+    - REDIS_PASSWORD=${REDIS_PASSWORD}
+    ports:
+      - "${INDEXER_PORT}:${INDEXER_PORT}"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - backend
+  db:
+    image: mariadb:latest
+    container_name: mariadb
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${MARIADB_DATABASE}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+      MARIADB_RANDOM_ROOT_PASSWORD: "no"
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    ports:
+      - "${MARIADB_PORT}:3306"
+    volumes:
+      - ./databases/mariadb_data:/var/lib/mysql
+    restart: unless-stopped
+    networks:
+      - backend
+
+  redis:
+    image: redis:latest
+    ports:
+      - "${REDIS_PORT}:6379"
+    environment:
+    - REDIS_TLS_ENABLED=yes
+    volumes:
+      - ./databases/redis_data:/data
+    restart: unless-stopped
+    command: >
+          --requirepass ${REDIS_PASSWORD}
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{.Data.Name}} - Go-Indexer</title>
+    <link rel="stylesheet" href="/static/css/global.css">
+    <link rel="stylesheet" href="/static/css/markdown.css">
+    <link rel="stylesheet" href="/static/css/torrent-view.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/apple-touch-icon.png">
+    <link rel="manifest" href="/static/favicon/site.webmanifest">
+    <script src="/static/js/marked.min.js"></script>
+</head>
+
+<body>
+    <header class="navbar">
+        <a href="/" class="logo">
+            <h1>Go-Indexer</h1>
+        </a>
+        <div class="navbar-actions">
+            <form id="searchForm" class="search-form">
+                <input type="text" name="searchTerm" placeholder="Search..." id="searchInput" class="search-input">
+                <button type="submit" class="search-button">Search</button>
+            </form>
+            {{if .Username}}
+            <a href="/profile/{{.Username}}" class="user-button">{{.Username}}</a>
+            <a href="/upload" class="user-button">Upload</a>
+            {{else}}
+            <a href="/profile" class="user-button">Login</a>
+            {{end}}
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="torrent-header">
+            <h2 class="torrent-title">{{.Data.Name}}</h2>
+
+            <div class="torrent-meta">
+                <div class="meta-group">
+                    <span class="meta-label">Category:</span>
+                    <span class="meta-value">{{.Data.Category}}</span>
+                </div>
+                <div class="meta-group">
+                    <span class="meta-label">Uploaded:</span>
+                    <span class="meta-value">{{.Data.Time}}</span>
+                </div>
+                <div class="meta-group">
+                    <span class="meta-label">Size:</span>
+                    <span class="meta-value">{{.Data.Size}}</span>
+                </div>
+                <div class="meta-group">
+                    <span class="meta-label">Uploader:</span>
+                    <a href="/profile/{{.Data.Uploader}}" class="meta-value">{{.Data.Uploader}}</a>
+                </div>
+                <div class="meta-group">
+                    <span class="meta-label">Hash:</span>
+                    <span class="meta-value hash">{{.Data.Hash}}</span>
+                </div>
+            </div>
+
+            <div class="torrent-actions">
+                <a href="/download/{{.Data.Hash}}.torrent" class="download-btn">Download Torrent</a>
+                <a href="{{.Magnet}}" class="magnet-btn">Magnet Link</a>
+            </div>
+        </div>
+
+        {{if .Description}}
+        <div class="torrent-description">
+            <h3 class="section-title">Description</h3>
+            <div class="markdown-container">
+                <div class="markdown-preview" id="descriptionContent"></div>
+            </div>
+            <textarea id="rawDescription" style="display:none;">{{.Description}}</textarea>
+        </div>
+        {{end}}
+
+        <div class="torrent-files">
+            <h3 class="files-title">File Structure</h3>
+            <ul class="file-tree">
+                {{template "renderNode" .TreeRoot}}
+            </ul>
+        </div>
+    </main>
+
+    <script src="/static/js/search.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const rawDescription = document.getElementById('rawDescription');
+            const descriptionContent = document.getElementById('descriptionContent');
+            
+            if (rawDescription && descriptionContent) {
+                marked.setOptions({
+                    gfm: true,
+                    breaks: true,
+                    tables: true,
+                });
+            
+                descriptionContent.innerHTML = marked.parse(rawDescription.value);                
+                descriptionContent.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+
+</html>
+
+{{define "renderNode"}}
+{{if .IsDir}}
+<li class="file-tree__item file-tree__item--dir">
+    <span class="file-tree__icon">📁</span>
+    <span class="file-tree__name">{{.Name}}</span>
+    {{if .Size}}<span class="file-tree__size">[{{.Size}}]</span>{{end}}
+    {{if .Children}}
+    <ul class="file-tree__nested">
+        {{range $child := .Children}}
+        {{template "renderNode" $child}}
+        {{end}}
+    </ul>
+    {{end}}
+</li>
+{{else}}
+<li class="file-tree__item file-tree__item--file">
+    <span class="file-tree__icon">📄</span>
+    <span class="file-tree__name">{{.Name}}</span>
+    <span class="file-tree__size">[{{.Size}}]</span>
+</li>
+{{end}}
+{{end}}
