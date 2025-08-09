@@ -1,0 +1,5 @@
+.gitignore
+*.torrent
+bin/
+scripts/
+databases/*
